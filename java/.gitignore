@@ -1,0 +1,3 @@
+# Java & Gradle specific 
+**/.gradle/
+**/build/
