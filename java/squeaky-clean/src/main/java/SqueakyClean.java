@@ -1,6 +1,12 @@
 import java.util.List;
-
+import java.util.Map;
 class SqueakyClean {
+    Map<Character, String> replacements = Map.of(
+        ' ', "_",
+        '\0', "CTRL",
+        '\r', "CTRL",
+        '\u007F', "CTRL"
+    );
     /**
      * Clean string
      * 
