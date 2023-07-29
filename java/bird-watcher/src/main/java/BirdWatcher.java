@@ -1,5 +1,7 @@
+import java.util.Arrays;
 
 class BirdWatcher {
+    private static final int BUSY_THRESHOLD = 5;
     private final int[] birdsPerDay;
 
     public BirdWatcher(int[] birdsPerDay) {
@@ -19,29 +21,20 @@ class BirdWatcher {
     }
 
     public boolean hasDayWithoutBirds() {
-        for(int day : this.birdsPerDay) {
-            if(day == 0) {
-                return true;
-            }
-        }
-        return false;
+        return Arrays.stream(this.birdsPerDay)
+        .filter(d -> d == 0)
+        .findAny()
+        .isPresent();
     }
 
     public int getCountForFirstDays(int numberOfDays) {
         final int size = Math.min(numberOfDays, this.birdsPerDay.length);
-        int sum = 0;
-        for(int i = 0; i < size; i++) {
-            sum += this.birdsPerDay[i];
-        }
-        return sum;
+        return Arrays.stream(this.birdsPerDay).limit(size).sum();
     }
 
     public int getBusyDays() {
-        final int busyThreshold = 5;
-        int busyDays = 0;
-        for (int day : this.birdsPerDay) {
-            busyDays += day >= busyThreshold ? 1 : 0;
-        }
-        return busyDays;
+        return (int) Arrays.stream(this.birdsPerDay)
+        .filter(d -> d >= BUSY_THRESHOLD)
+        .count();
     }
 }
