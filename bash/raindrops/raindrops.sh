@@ -28,11 +28,11 @@ build_factor_sound() {
     SOUND=""
 
     # check if divisible by 3
-    SOUND=$(add_factor $NUMBER $PLING $PLING_STR $SOUND)
+    SOUND="$(add_factor $NUMBER $PLING $PLING_STR $SOUND)"
     # check if divisible by 5
-    SOUND=$(add_factor $NUMBER $PLANG $PLANG_STR $SOUND)
+    SOUND="$(add_factor $NUMBER $PLANG $PLANG_STR $SOUND)"
     # check if divisible by 7
-    SOUND=$(add_factor $NUMBER $PLONG $PLONG_STR $SOUND)
+    SOUND="$(add_factor $NUMBER $PLONG $PLONG_STR $SOUND)"
 
     if [ -z "$SOUND" ]; then
         SOUND="$NUMBER"
@@ -49,4 +49,4 @@ if [ $# -ne 1 ]; then
 fi
 
 # numeric argument 
-build_factor_sound $1
+build_factor_sound "$1"
