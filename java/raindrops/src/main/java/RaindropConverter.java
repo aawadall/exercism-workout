@@ -11,13 +11,15 @@ class RaindropConverter {
     String convert(int number) {
         var sound = new StringBuilder();
 
-        for (var factor : FACTOR_TO_SOUND.keySet()) {
-            if (number % factor == 0) {
-                sound.insert( 0,FACTOR_TO_SOUND.get(factor));
-            }
-        }
+        FACTOR_TO_SOUND.keySet().stream()
+            .sorted()
+            .filter(factor -> number % factor == 0) // filter out factors
+            .forEach(factor -> sound // build sound
+                    .append(FACTOR_TO_SOUND.get(factor)));
         
-        return sound.length() == 0 ? String.valueOf(number) : sound.toString();
+        return sound.length() == 0 ? 
+            String.valueOf(number) : 
+            sound.toString();
     }
 
 }
