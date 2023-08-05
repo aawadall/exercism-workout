@@ -21,16 +21,6 @@ class ProductionRemoteControlCar implements RemoteControlCar, Comparable<Product
 
     @Override
     public int compareTo(ProductionRemoteControlCar o) {
-        // TODO Auto-generated method stub
-        var delta = this.getNumberOfVictories() - o.getNumberOfVictories();
-        if (delta > 0) {
-            return 1;
-        }
-
-        if (delta < 0) {
-            return -1;
-        }
-
-        return 0;
+        return Integer.compare( this.getNumberOfVictories() , o.getNumberOfVictories());
     }
 }
