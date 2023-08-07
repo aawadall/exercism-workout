@@ -1,7 +1,11 @@
+import java.util.stream.IntStream;
 
 public class Hamming {
     private String leftStrand;
     private String rightStrand;
+
+    private Boolean standsUpdated = true;
+    private int hammingDistance;
 
     /**
      * Constructor for the Hamming distance class.
@@ -14,7 +18,8 @@ public class Hamming {
     public Hamming(String leftStrand, String rightStrand) {
         this.leftStrand = leftStrand;
         this.rightStrand = rightStrand;
-
+        this.standsUpdated = true;
+        updateDistance();
         validateInput();
     }
 
@@ -26,19 +31,8 @@ public class Hamming {
      *         constructor
      */
     public int getHammingDistance() {
-
-        // short circuit if empty strands are equal
-        if (leftStrand.isEmpty()) {
-            return 0;
-        }
-
-        // count differences
-        int count = 0;
-        for (int i = 0; i < leftStrand.length(); i++) {
-            count += leftStrand.charAt(i) != rightStrand.charAt(i) ? 1 : 0;
-        }
-        
-        return count;
+        updateDistance();
+        return hammingDistance;
     }
 
     // Helper methods
@@ -61,4 +55,20 @@ public class Hamming {
         }
     }
 
+    /**
+     * Updates the hamming distance between the two strands.
+     * 
+     * @throws IllegalArgumentException
+     */
+    private void updateDistance() throws IllegalArgumentException {
+        if (!standsUpdated) {
+            return;
+        }
+
+        validateInput();
+
+        hammingDistance = (int) IntStream.range(0, leftStrand.length())
+                .filter(idx -> leftStrand.charAt(idx) != rightStrand.charAt(idx))
+                .count();
+    }
 }
