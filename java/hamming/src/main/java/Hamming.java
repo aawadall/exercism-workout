@@ -70,5 +70,7 @@ public class Hamming {
         hammingDistance = (int) IntStream.range(0, leftStrand.length())
                 .filter(idx -> leftStrand.charAt(idx) != rightStrand.charAt(idx))
                 .count();
+
+        standsUpdated = false;
     }
 }
