@@ -3,7 +3,7 @@ import java.util.stream.IntStream;
 class DifferenceOfSquaresCalculator {
 
     int computeSquareOfSumTo(int input) {
-        var sum = IntStream.rangeClosed(0, input).sum();
+        var sum = sumFirstN(input);
         return sum*sum;
     }
 
@@ -15,4 +15,7 @@ class DifferenceOfSquaresCalculator {
         return computeSquareOfSumTo(input) - computeSumOfSquaresTo(input);
     }
 
+    private int sumFirstN(int n) {
+        return n*(n+1)/2;
+    }
 }
