@@ -29,50 +29,25 @@ class Matrix {
         int rowSize = rows.size();
         int columnSize = columns.size();
         // two pass operation; 
-        // first pass: find the max in each row
+        // first pass: find the max in each row, and store all max coordinates in that row 
+
         var firstPass = new HashSet<InnerCoordinates>();
         for(int idx = 0; idx < rowSize; idx++) {
             var row = rows.get(idx);
             var max = row.stream().max(Integer::compare).get();
-            // find all the indices of the max value
-            List<Integer> indices = row.stream().collect(
-                ArrayList::new, 
-                (list, value) -> {
-                    if(value == max) {
-                        list.add(row.indexOf(value));
-                    }
-                }, 
-                ArrayList::addAll
-            );
-
-            int finalIdx = idx;
-            indices.forEach(colIndex -> firstPass.add(new InnerCoordinates(finalIdx, colIndex)));
-            
+        
+            for(int col = 0; col < columnSize; col++) {
+                if(row.get(col) == max) {
+                    firstPass.add(new InnerCoordinates(idx, col));
+                }
+            }
         }
-        // second pass: find the min in each column
-        var secondPass = new HashSet<InnerCoordinates>();
-        for(int idx = 0; idx < columnSize; idx++) {
-            var col = columns.get(idx);
-            var min = col.stream().min(Integer::compare).get();
-            // find all the indices of the min value
-            List<Integer> indices = col.stream().collect(
-                ArrayList::new, 
-                (list, value) -> {
-                    if(value == min) {
-                        list.add(col.indexOf(value));
-                    }
-                }, 
-                ArrayList::addAll
-            );
-
-            int finalIdx = idx;
-            indices.forEach(rowIndex -> secondPass.add(new InnerCoordinates(rowIndex, finalIdx)));
-        }
-        // if coordinates match, then it is a saddle point
-        // return intersection of first and second pass
+        // second pass: ensure this coordinate is not larger than others in a column
         var result = new HashSet<MatrixCoordinate>();
         for(var coord : firstPass) {
-            if(secondPass.contains(coord)) {
+            var column = columns.get(coord.col());
+            var min = column.stream().min(Integer::compare).get();
+            if(rows.get(coord.row()).get(coord.col()) == min) {
                 result.add(new MatrixCoordinate(coord.row() + 1, coord.col() + 1));
             }
         }
