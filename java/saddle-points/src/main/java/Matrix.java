@@ -5,60 +5,106 @@ import java.util.Map;
 import java.util.Set;
 
 class Matrix {
-    private final List<List<Integer>> values;
-    private final int rows;
-    private final int cols;
+    private final List<List<Integer>> rows;
+    private final List<List<Integer>> columns;
 
     Matrix(List<List<Integer>> values) {
-        this.values = values;
-        this.rows = values.size();
-        this.cols = values.get(0).size(); // assume all rows have the same number of columns
+        this.rows = values;
+        this.columns = transpose(values);
     }
 
     /**
      * A saddle point is a matrix element where:
-     *  - it is the maximum in its row
-     *  - it is the minimum in a column
+     * - it is the maximum in its row
+     * - it is the minimum in a column
+     * 
      * @return the coordinates of all the saddle points of the matrix
      */
     Set<MatrixCoordinate> getSaddlePoints() {
-        // iterate over rows to find candidate saddle points
-        var candidates = new HashSet<int[]>();
-        for (int rowIndex = 0; rowIndex < this.rows; rowIndex++) {
-            var rowUnderTest = this.values.get(rowIndex);
-            var maxInRow = rowUnderTest.stream().max(Integer::compareTo).orElseThrow();
-            var colIndex = rowUnderTest.indexOf(maxInRow);
-            candidates.add(
-                new int[] { rowIndex , colIndex  } // +1 because the exercise uses 1-based indexing
-            );
+        // short circuit if matrix is empty
+        if(rows.isEmpty()) {
+            return new HashSet<>();
         }
 
-        // iterate over candidates to find saddle points
-        return filterCandidates(candidates);
-    }
+        int rowSize = rows.size();
+        int columnSize = columns.size();
+        // two pass operation; 
+        // first pass: find the max in each row
+        var firstPass = new HashSet<InnerCoordinates>();
+        for(int idx = 0; idx < rowSize; idx++) {
+            var row = rows.get(idx);
+            var max = row.stream().max(Integer::compare).get();
+            // find all the indices of the max value
+            List<Integer> indices = row.stream().collect(
+                ArrayList::new, 
+                (list, value) -> {
+                    if(value == max) {
+                        list.add(row.indexOf(value));
+                    }
+                }, 
+                ArrayList::addAll
+            );
 
-    private Set<MatrixCoordinate> filterCandidates(Set<int[]> candidate) {
-        // for each candidate, check if it is the minimum in its column
-        var saddlePoints = new HashSet<MatrixCoordinate>();
-        for (var candidateCoordinate : candidate) {
-            var column = getColumn(candidateCoordinate[1]);
-            var minInColumn = column.stream().min(Integer::compareTo).orElseThrow();
-            if (minInColumn == getValue(candidateCoordinate)) {
-                saddlePoints.add(new MatrixCoordinate(candidateCoordinate[0]+1, candidateCoordinate[1]+1));
+            int finalIdx = idx;
+            indices.forEach(colIndex -> firstPass.add(new InnerCoordinates(finalIdx, colIndex)));
+            
+        }
+        // second pass: find the min in each column
+        var secondPass = new HashSet<InnerCoordinates>();
+        for(int idx = 0; idx < columnSize; idx++) {
+            var col = columns.get(idx);
+            var min = col.stream().min(Integer::compare).get();
+            // find all the indices of the min value
+            List<Integer> indices = col.stream().collect(
+                ArrayList::new, 
+                (list, value) -> {
+                    if(value == min) {
+                        list.add(col.indexOf(value));
+                    }
+                }, 
+                ArrayList::addAll
+            );
+
+            int finalIdx = idx;
+            indices.forEach(rowIndex -> secondPass.add(new InnerCoordinates(rowIndex, finalIdx)));
+        }
+        // if coordinates match, then it is a saddle point
+        // return intersection of first and second pass
+        var result = new HashSet<MatrixCoordinate>();
+        for(var coord : firstPass) {
+            if(secondPass.contains(coord)) {
+                result.add(new MatrixCoordinate(coord.row() + 1, coord.col() + 1));
             }
         }
-        return saddlePoints;
+        return result;
     }
 
-    private List<Integer> getColumn(int columnIndex) {
-        var column = new ArrayList<Integer>();
-        for (var row : this.values) {
-            column.add(row.get(columnIndex));
+    // Helper methods
+
+    /**
+     * Transpose a matrix
+     * 
+     * @param matrix the matrix to transpose
+     * @return the transposed matrix
+     */
+    private static List<List<Integer>> transpose(List<List<Integer>> matrix) {
+        // short circuit if matrix is empty
+        if(matrix.isEmpty()) {
+            return matrix;
         }
-        return column;
+        
+        List<List<Integer>> result = new ArrayList<>();
+        int columnSize = matrix.get(0).size();
+        for (int i = 0; i < columnSize; i++) {
+            List<Integer> row = new ArrayList<>();
+            for (List<Integer> col : matrix) {
+                row.add(col.get(i));
+            }
+            result.add(row);
+        }
+        return result;
     }
 
-    private int getValue(int[] coordinate) {
-        return this.values.get(coordinate[0]).get(coordinate[1]);
-    }
+    // inner class to represent coordinates
+    private record InnerCoordinates(int row, int col) {};
 }
