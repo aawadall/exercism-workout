@@ -3,13 +3,13 @@
 
 # Get Number of Digits
 function get_number_of_digits() {
-    number=$1
+    number="$1"
     number_of_digits=0
     while [ $number -gt 0 ]; do
         number_of_digits=$((number_of_digits + 1))
         number=$((number / 10))
     done
-    echo $number_of_digits
+    echo "$number_of_digits"
 }
 
 # Get Poewr
@@ -20,13 +20,13 @@ function get_power() {
         return
     fi
     # Normal Case
-    number=$1
-    power=$2
+    number="$1"
+    power="$2"
     result=1
     for ((i = 1; i <= power; i++)); do
         result=$((result * number))
     done
-    echo $result
+    echo "$result"
 }
 
 # Main Function
@@ -38,23 +38,23 @@ function main() {
     fi
 
     # Check if the argument is a number
-    if ! [[ $1 =~ ^[0-9]+$ ]]; then
+    if ! [[ "$1" =~ ^[0-9]+$ ]]; then
         echo "Error: Only positive numbers are allowed"
         exit 1
     fi
 
-    number=$1
-    number_of_digits=$(get_number_of_digits $number)
+    number="$1"
+    number_of_digits=$(get_number_of_digits "$number")
 
     # Calculate the sum of the digits raised to the power of the number of digits
     sum=0
-    numbers=($(echo $number | grep -o .))
+    numbers=($(echo "$number" | grep -o .))
     for i in "${numbers[@]}"; do
-        sum=$((sum + $(get_power $i $number_of_digits)))
+        sum=$((sum + $(get_power "$i" "$number_of_digits")))
     done
 
     # Check if the number is an Armstrong number
-    if [ $sum -eq $number ]; then
+    if [ $sum -eq "$number" ]; then
         echo "true"
     else
         echo "false"
