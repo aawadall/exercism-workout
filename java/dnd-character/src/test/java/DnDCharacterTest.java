@@ -158,15 +158,30 @@ public class DnDCharacterTest {
         DnDCharacter uniqueDnDCharacter = new DnDCharacter();
         for (int i = 0; i < 1000; i++) {
             DnDCharacter dnDCharacter = new DnDCharacter();
-            boolean dnDCharactersHaveDifferentAttributes =
-                    dnDCharacter.getStrength() != uniqueDnDCharacter.getStrength()
-                            || dnDCharacter.getDexterity() != uniqueDnDCharacter.getDexterity()
-                            || dnDCharacter.getConstitution() != uniqueDnDCharacter.getConstitution()
-                            || dnDCharacter.getIntelligence() != uniqueDnDCharacter.getIntelligence()
-                            || dnDCharacter.getWisdom() != uniqueDnDCharacter.getWisdom()
-                            || dnDCharacter.getCharisma() != uniqueDnDCharacter.getCharisma()
-                            || dnDCharacter.getModifierOffset() != uniqueDnDCharacter.getModifierOffset();
+            boolean dnDCharactersHaveDifferentAttributes = dnDCharacter.getStrength() != uniqueDnDCharacter
+                    .getStrength()
+                    || dnDCharacter.getDexterity() != uniqueDnDCharacter.getDexterity()
+                    || dnDCharacter.getConstitution() != uniqueDnDCharacter.getConstitution()
+                    || dnDCharacter.getIntelligence() != uniqueDnDCharacter.getIntelligence()
+                    || dnDCharacter.getWisdom() != uniqueDnDCharacter.getWisdom()
+                    || dnDCharacter.getCharisma() != uniqueDnDCharacter.getCharisma()
+                    || dnDCharacter.getModifierOffset() != uniqueDnDCharacter.getModifierOffset();
             assertTrue(dnDCharactersHaveDifferentAttributes);
         }
     }
+
+    @Test
+    public void testRandomCharacterIsValid2() {
+        for (int i = 0; i < 1000; i++) {
+            DnDCharacter character = new DnDCharacter();
+            assertTrue(character.getStrength() > 2 && character.getStrength() < 19);
+            assertTrue(character.getDexterity() > 2 && character.getDexterity() < 19);
+            assertTrue(character.getConstitution() > 2 && character.getConstitution() < 19);
+            assertTrue(character.getIntelligence() > 2 && character.getIntelligence() < 19);
+            assertTrue(character.getWisdom() > 2 && character.getWisdom() < 19);
+            assertTrue(character.getCharisma() > 2 && character.getCharisma() < 19);
+            assertEquals(10 + character.modifier(character.getConstitution()), character.getHitpoints());
+        }
+    }
+
 }

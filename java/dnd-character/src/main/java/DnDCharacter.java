@@ -4,12 +4,12 @@ import java.util.Map;
 
 class DnDCharacter {
     private static final int MODIFIER_OFFSET = 10;
-    private static final int HIT_POINTS = 10;
     private static final double MODIFIER_DIVISOR = 2.0;
     private static final int DIE_TRIES = 4;
     private static final int DIE_SIDES = 6;
     private static final int TOP_DIE_COUNT = 3;
-
+    
+    private int hitPoints = 10;
     private Map<String, Integer> abilities;
 
     public DnDCharacter() {
@@ -111,7 +111,16 @@ class DnDCharacter {
      * @return hit points
      */
     int getModifierOffset() {
-        return modifier(abilities.get("constitution")) + HIT_POINTS;
+        return modifier(abilities.get("constitution")) + hitPoints;
+    }
+
+    /**
+     * Return the hit points.
+     * This method failed remote test
+     * @return hit points
+     */
+    int getHitpoints() {
+        return getModifierOffset();
     }
 
     /**
