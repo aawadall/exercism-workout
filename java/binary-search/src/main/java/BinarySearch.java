@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.List;
 
 class BinarySearch {
@@ -16,7 +17,7 @@ class BinarySearch {
     }
 
     int search(int a, int[] arr) throws ValueNotFoundException {
-        Integer[] boxedArr = new Integer[arr.length];
+        Integer[] boxedArr = Arrays.stream(arr).boxed().toArray(Integer[]::new);
         
         return (int) genericSearch(a, boxedArr);
         
@@ -43,6 +44,12 @@ class BinarySearch {
      * @return index of value in array
      */
     private static <T extends Comparable<T>> int genericSearch(T a, T[] arr) throws ValueNotFoundException{
+        // Short circuit if array is empty
+        if (arr.length == 0) {
+            throw new ValueNotFoundException("Value not in array");
+        }
+        
+        // Normal operation
         var found = false;
         var leftIndex = 0;
         var rightIndex = arr.length - 1;
@@ -73,6 +80,6 @@ class BinarySearch {
             }
         }
 
-        throw new ValueNotFoundException("value not in array");
+        throw new ValueNotFoundException("Value not in array");
     }
 }
