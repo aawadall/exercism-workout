@@ -1,6 +1,7 @@
 class PigLatinTranslator {
     public String translate(String word) {
         word = rule3(word);
+        word = rule4(word);
         word = rule1(word);
         word = rule2(word);
         return word;
